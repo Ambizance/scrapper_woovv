@@ -75,7 +75,7 @@ def get_all_cw_infos(page_index_general)
     tab_all_url = []
     CSV.open("db_urls.csv", "wb") do |csv|
         csv << ["CW_name", "CW_url", "full_address", "street_address","zip_code", "city", "pricing", "opening_hours", "website_url"] # ne pas oublier de remettre "city" et "zipcode"
-        for i in 8..9
+        for i in 15..30
             page = page_index_general + i.to_s
             get_coworking_url(page).each do |url|
                 csv << [get_cw_infos_from_url(url)]
@@ -86,21 +86,3 @@ end
 
 get_all_cw_infos('https://www.coworking-france.com/coworking/coworking-france/page/')
 
-
-
-# puts '*'*100
-# print get_cw_infos_from_url('https://www.coworking-france.com/espace-coworking/coworking-digital-village-seine-et-marne/')
-# print get_cw_infos_from_url('https://www.coworking-france.com/espace-coworking/coworking-digital-village-seine-et-marne/')
-# puts '*'*100
-
-
-
-
-
-# puts get_coworking_url('https://www.coworking-france.com/coworking/coworking-france/')
-
-# puts get_title_from_url('https://www.coworking-france.com/espace-coworking/coworking-la-cantine-numerique-rennes/')
-# return title = page.css('h1.product_title').text.split[1..-1].join(' ')
-
-
-# puts get_title_from_url(get_coworking_url('https://www.coworking-france.com/coworking/coworking-france/coworking-bretagne/coworking-ille-et-vilaine/')[23])
