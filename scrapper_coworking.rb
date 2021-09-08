@@ -7,21 +7,50 @@ require 'csv'
 # A partir de l'URL d'un CW, on récupère sous forme de tableau les infos qui nous intéressent
 
 def get_cw_infos_from_url(url_coworking)
+    begin
     page = Nokogiri::HTML(URI.open(url_coworking))   
-    # return page.css('h1.product_title').text
     cw_info_tab = []
-    cw_info_tab << page.css('h1.product_title').text # name
-    cw_info_tab << page.css('h2 + p')[0].text  # description
+    name = page.css('h1.product_title').text
+    city = page.css('h2')[0].text.split(' ')
+
+    # puts city
+    index_a_in = (city.include?('à') ? city.index('à') : city.index('in'))+1
+    index_ses_premises = (city.include?('ses') ? city.index('ses') : city.index('premises'))
+
+
+    city = city[index_a_in..-1].join(' ')
+    full_address = page.css('.rh-360-content-area p')[2].text
+
+    full_address = full_address.split(' ')[3..-1].join(' ')
+    
+
+    address2 = (full_address.slice! name)
+
+    
+    full_address = full_address.split('.')[0].split(' ')[1..-1].join(' ')
+    address_tab = full_address.split(',')
+    
+
+    street_address = address_tab[0]
+    zip_code = address_tab[1][1..-1]
+
+    cw_info_tab << name # name
     cw_info_tab << url_coworking # URL
-    cw_info_tab << page.css('.rh-360-content-area p')[2].text  # adresse complète
-    cw_info_tab << page.css('.rh-360-content-area p')[11].text  # tarifs
-    cw_info_tab << page.css('.rh-360-content-area p')[9].text  # horaires
-    # cw_info_tab << page.css('.rh-360-content-area p')[17].text  # facilities >>> BIZARRE CETTE HISTOIRE
+    cw_info_tab << full_address # full address
+    cw_info_tab << street_address # street address
+    cw_info_tab << zip_code 
+    cw_info_tab << city 
+
+    cw_info_tab << page.css('.rh-360-content-area p')[11].text  # pricing
+    cw_info_tab << page.css('.rh-360-content-area p')[9].text  # opening hours
     cw_info_tab << page.css('.rh-360-content-area p a')[0]['href'] # penser à retirer le lien affilié coworking-france par la suite
+    rescue 
+        puts "error !!!!!!!"
+    end
     return cw_info_tab
 end
 
-
+# get_cw_infos_from_url('https://www.coworking-france.com/espace-coworking/lab-oikos-lille/')
 
 
 # Fonction qui récupère la liste d'URL d'une page d'index donnée 
@@ -45,8 +74,8 @@ end
 def get_all_cw_infos(page_index_general)
     tab_all_url = []
     CSV.open("db_urls.csv", "wb") do |csv|
-        csv << ["CW_name", "CW_description", "CW_url", "address", "pricing", "opening_hours", "website_url"] # ne pas oublier de remettre "city" et "zipcode"
-        for i in 1..1
+        csv << ["CW_name", "CW_url", "full_address", "street_address","zip_code", "city", "pricing", "opening_hours", "website_url"] # ne pas oublier de remettre "city" et "zipcode"
+        for i in 8..9
             page = page_index_general + i.to_s
             get_coworking_url(page).each do |url|
                 csv << [get_cw_infos_from_url(url)]
