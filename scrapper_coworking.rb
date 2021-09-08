@@ -28,11 +28,14 @@ def get_cw_infos_from_url(url_coworking)
 
     
     full_address = full_address.split('.')[0].split(' ')[1..-1].join(' ')
+
     address_tab = full_address.split(',')
     
 
     street_address = address_tab[0]
     zip_code = address_tab[1][1..-1]
+
+    full_address = full_address.split(",").join(' -')
 
     cw_info_tab << name # name
     cw_info_tab << url_coworking # URL
@@ -50,7 +53,7 @@ def get_cw_infos_from_url(url_coworking)
     return cw_info_tab
 end
 
-# get_cw_infos_from_url('https://www.coworking-france.com/espace-coworking/lab-oikos-lille/')
+# get_cw_infos_from_url('https://www.coworking-france.com/espace-coworking/mama-works-bordeaux/')
 
 
 # Fonction qui récupère la liste d'URL d'une page d'index donnée 
@@ -75,7 +78,7 @@ def get_all_cw_infos(page_index_general)
     tab_all_url = []
     CSV.open("db_urls.csv", "wb") do |csv|
         csv << ["CW_name", "CW_url", "full_address", "street_address","zip_code", "city", "pricing", "opening_hours", "website_url"] # ne pas oublier de remettre "city" et "zipcode"
-        for i in 15..30
+        for i in 1..2
             page = page_index_general + i.to_s
             get_coworking_url(page).each do |url|
                 csv << [get_cw_infos_from_url(url)]
