@@ -23,26 +23,19 @@ end
 # get_coworking_url sur chacune d'entre elle et stocke toutes les URLs dans un tableau
 
 def get_all_coworking_url(page_index_general)
-
     tab_all_url = []
-    for i in 1..105
-        page = page_index_general + i.to_s
-        get_coworking_url(page).each do |url|
-            tab_all_url << url
-        end
-    end
-    # return tab_all_url
-
     CSV.open("db_urls.csv", "wb") do |csv|
         csv << ["url_coworking"]
-        tab_all_url.each do |url|
-            csv << [url]
+        for i in 1..105
+            page = page_index_general + i.to_s
+            get_coworking_url(page).each do |url|
+                csv << [url]
+            end
         end
-      end
-
+    end
 end
 
-get_all_coworking_url('https://www.coworking-france.com/coworking/coworking-france/page/').count
+get_all_coworking_url('https://www.coworking-france.com/coworking/coworking-france/page/')
 
 
 
