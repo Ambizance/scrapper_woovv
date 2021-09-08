@@ -31,7 +31,14 @@ def get_all_coworking_url(page_index_general)
             tab_all_url << url
         end
     end
-    return tab_all_url
+    # return tab_all_url
+
+    CSV.open("db_urls.csv", "wb") do |csv|
+        csv << ["url_coworking"]
+        tab_all_url.each do |url|
+            csv << [url]
+        end
+      end
 
 end
 
